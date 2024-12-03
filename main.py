@@ -10,27 +10,41 @@ animation_done = False
 
 B1 = [[0.0, 0.0], [6.0, 2.0]]
 B2 = [[0.0, 0.0], [7.0, 0.0], [1.0, 4.0]]
+V_pos = []
+V_vec = []
 
 
 def do_animation(t):
     global animation_done
-    duration = 5
-    if t > duration:
+    v_factor = 5
+    u = t / v_factor
+    if t > v_factor:
         animation_done = True
     else:
-        B1[1][0] = 6.0 - t
-        B1[1][1] = 2.0 + 3 * t / duration
-        B2[1][0] = 7.0 - t
-        B2[1][1] = t
+        pos = eval_Bezier2(B2, u)
+        V_pos[0] = pos[0]
+        V_pos[1] = pos[1]
+        vec = eval_dBezier2(B2, u)
+        V_vec[0] = vec[0] / v_factor
+        V_vec[1] = vec[1] / v_factor
 
 
 def draw_scene():
     draw_grid(canvas)
     draw_axis(canvas)
     draw_Bezier(B2, 20)
+    GREEN = rgb_col(0, 255, 0)
+    draw_dot(canvas, V_pos[0], V_pos[1], GREEN)
+    draw_line(
+        canvas, V_pos[0], V_pos[1], V_pos[0] + V_vec[0], V_pos[1] + V_vec[1], GREEN
+    )
 
 
 def init_scene():
+    V_pos.append(0.0)
+    V_pos.append(0.0)
+    V_vec.append(0.0)
+    V_vec.append(0.0)
     do_animation(0.0)
     draw_scene()
 
@@ -49,6 +63,14 @@ def eval_Bezier2(P, t):
         res[xy] = (
             ((1 - t) ** 2) * P[0][xy] + 2 * t * (1 - t) * P[1][xy] + (t**2) * P[2][xy]
         )
+    return res
+
+
+def eval_dBezier2(P, t):
+    # P'(t) = 2.t.(P[0] - 2.P[1] + P[2]) + 2.P[1]
+    res = [0.0, 0.0]
+    for xy in range(2):
+        res[xy] = 2 * t * (P[0][xy] - 2 * P[1][xy] + P[2][xy])+ 2 * P[1][xy]
     return res
 
 
