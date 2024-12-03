@@ -9,6 +9,7 @@ w_ymax = w_ymin + (w_xmax - w_xmin) / vp_width * vp_height
 animation_done = False
 
 B1 = [[0.0, 0.0], [6.0, 2.0]]
+B2 = [[0.0, 0.0], [7.0, 0.0], [1.0, 4.0]]
 
 
 def do_animation(t):
@@ -19,12 +20,14 @@ def do_animation(t):
     else:
         B1[1][0] = 6.0 - t
         B1[1][1] = 2.0 + 3 * t / duration
+        B2[1][0] = 7.0 - t
+        B2[1][1] = t
 
 
 def draw_scene():
     draw_grid(canvas)
     draw_axis(canvas)
-    draw_Brezier1(B1, 20)
+    draw_Bezier(B2, 20)
 
 
 def init_scene():
@@ -32,26 +35,39 @@ def init_scene():
     draw_scene()
 
 
-def eval_Brezier1(P, t):
+def eval_Bezier1(P, t):
     res = [0.0, 0.0]
     for xy in range(2):
         res[xy] = (1 - t) * P[0][xy] + t * P[1][xy]
     return res
 
 
-def draw_Brezier1(P, nsteps):
+def eval_Bezier2(P, t):
+    # P(t) = (1-t)².P[0] + 2t(1-t)P[1] + t².P[2]
+    res = [0.0, 0.0]
+    for xy in range(2):
+        res[xy] = (
+            ((1 - t) ** 2) * P[0][xy] + 2 * t * (1 - t) * P[1][xy] + (t**2) * P[2][xy]
+        )
+    return res
+
+
+def draw_Bezier(P, nsteps):
     xi = P[0][0]
     yi = P[0][1]
     t_delta = 1 / nsteps
     t = t_delta
     for ti in range(nsteps):
-        p = eval_Brezier1(P, t)
+        if len(P) == 2:
+            p = eval_Bezier1(P, t)
+        elif len(P) == 3:
+            p = eval_Bezier2(P, t)
         draw_line(canvas, xi, yi, p[0], p[1], rgb_col(255, 0, 0))
         draw_small_square(canvas, xi, yi, rgb_col(255, 255, 0))
         xi = p[0]
         yi = p[1]
         t += t_delta
-    for i in range(2):
+    for i in range(len(P)):
         draw_small_square(canvas, P[i][0], P[i][1], rgb_col(0, 255, 0))
 
 
