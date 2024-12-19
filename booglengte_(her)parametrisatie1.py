@@ -60,12 +60,12 @@ def do_animation(s):
     if t > t_max:
         animation_done = True
     else:
-        pos = eval_Bezier2(B2, u)
+        pos = eval_Bezier2(B2, t)
         V_pos[0] = pos[0]
         V_pos[1] = pos[1]
-        vec = eval_dBezier2(B2, u)
-        V_vec[0] = vec[0] / math.sqrt(vec[0] ** 2 + vec[1] ** 2) * speed
-        V_vec[1] = vec[1] / math.sqrt(vec[0] ** 2 + vec[1] ** 2) * speed
+        vec = eval_dBezier2(B2, t)
+        V_vec[0] = speed * vec[0] / math.sqrt(vec[0] ** 2 + vec[1] ** 2)
+        V_vec[1] = speed * vec[1] / math.sqrt(vec[0] ** 2 + vec[1] ** 2)
 
 
 def draw_Bezier(P, nsteps):

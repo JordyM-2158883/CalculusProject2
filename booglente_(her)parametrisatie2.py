@@ -91,16 +91,16 @@ def Simpson_sum(int_left, int_right):
 
 def do_animation(s):
     global animation_done
-    speed = 2
+    speed = 1
     u = s * speed
     t = get_NR_curve_t(u)
     if t > t_max:
         animation_done = True
     else:
-        pos = eval_Bezier3(B3, u)
+        pos = eval_Bezier3(B3, t)
         V_pos[0] = pos[0]
         V_pos[1] = pos[1]
-        vec = eval_dBezier3(B3, u)
+        vec = eval_dBezier3(B3, t)
         V_vec[0] = speed * vec[0] / math.sqrt(vec[0] ** 2 + vec[0] ** 2)
         V_vec[1] = speed * vec[1] / math.sqrt(vec[0] ** 2 + vec[0] ** 2)
 

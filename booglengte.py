@@ -153,7 +153,7 @@ def printLenBezier3():
     n_grid = 100
 
     generate_Riemann_reg_grid(t_grid, n_grid, t_min, t_max)
-    print(f"lengte Simpson:\t\t{Simpson_sum(t_grid, t_min, t_max, 3)}")  # FIXME
+    print(f"lengte Simpson:\t\t{Simpson_sum(t_grid, t_min, t_max, 3)}")
     for n_steps in [100, 1000, 10000]:
         print(
             f"lengte brute force (n = {n_steps}):\t\t{arc_length_Bezier3_approx(B3, t_max, n_steps)}"
